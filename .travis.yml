@@ -2,26 +2,44 @@ language: generic
 
 sudo: required
 
+dist: trusty
+
+addons:
+  apt:
+    sources:
+      - avsm
+    packages:
+      - opam
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.opam
+
+env:
+  - COQ_VERSION="8.6"
+  - COQ_VERSION="8.6.dev"
+  - COQ_VERSION="dev"
+
 matrix:
   fast_finish: true
-  include:
-    - dist: trusty
-      env: COQ_VERSION="trunk"    COQ_PACKAGE="coq"      PPA="ppa:jgross-h/coq-trunk-daily"        TARGETS="coq"
-    - dist: trusty
-      env: COQ_VERSION="v8.6"     COQ_PACKAGE="coq"      PPA="ppa:jgross-h/coq-8.6-daily"          TARGETS="coq"
-    - dist: trusty
-      env: COQ_VERSION="8.6"      COQ_PACKAGE="coq-8.6"  PPA="ppa:jgross-h/many-coq-versions"      TARGETS="coq"
   allow_failures:
-    - env: COQ_VERSION="v8.6"     COQ_PACKAGE="coq"      PPA="ppa:jgross-h/coq-8.6-daily"          TARGETS="coq"
-    - env: COQ_VERSION="trunk"    COQ_PACKAGE="coq"      PPA="ppa:jgross-h/coq-trunk-daily"        TARGETS="coq"
+    env: COQ_VERSION="8.6.dev"
+    env: COQ_VERSION="dev"
 
 before_install:
-  - if [ ! -z "$PPA" ]; then sudo add-apt-repository "$PPA" -y; fi
-  - sudo apt-get update -q
-  - sudo apt-get install $COQ_PACKAGE -y
-
+  - export NJOBS=2
+  - [ -e .opam ] || opam init -j ${NJOBS} --compiler=system -n -y
+  - eval $(opam config env)
+#  - opam config var root
+#  - opam install -j ${NJOBS} -y camlp5 ocamlfind
+  - opam list
+  - opam add coq-extra-dev https://coq.inria.fr/opam/extra-dev
+  - opam add coq-core-dev https://coq.inria.fr/opam/core-dev
+  - opam install -j ${NJOBS} -y coq.${COQ_VERSION}
+  - opam install -j ${NJOBS} -y coq-corn
 
 before_script:
   - uname -a
 
-script: make corn TIMED=1 -j2 && make $TARGETS TIMED=1 -j2
+script: make TIMED=1 -j2
