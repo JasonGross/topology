@@ -29,7 +29,7 @@ matrix:
 
 before_install:
   - export NJOBS=2
-  - [ -e .opam ] || opam init -j ${NJOBS} --compiler=system -n -y
+  - if ! [ -e .opam ]; then opam init -j ${NJOBS} --compiler=system -n -y; fi
   - eval $(opam config env)
 #  - opam config var root
 #  - opam install -j ${NJOBS} -y camlp5 ocamlfind
