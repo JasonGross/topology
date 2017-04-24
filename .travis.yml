@@ -24,8 +24,8 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    env: COQ_VERSION="8.6.dev"
-    env: COQ_VERSION="dev"
+    - env: COQ_VERSION="8.6.dev"
+    - env: COQ_VERSION="dev"
 
 before_install:
   - export NJOBS=2
