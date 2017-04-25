@@ -30,7 +30,7 @@ env:
 before_install:
   - export NJOBS=2
   - if ! [ -e .opam ]; then opam init -j ${NJOBS} --compiler=system -n -y; fi
-  - opam switch create coq-${COQ_VERSION} system || true
+  - opam switch coq-${COQ_VERSION} || opam switch install coq-${COQ_VERSION} --alias-of=system
   - opam switch coq-${COQ_VERSION}
   - eval $(opam config env)
 #  - opam config var root
