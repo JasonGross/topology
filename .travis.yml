@@ -17,15 +17,15 @@ cache:
     - $HOME/.opam
 
 env:
-#  - COQ_VERSION="8.6"
+  - COQ_VERSION="8.6"
   - COQ_VERSION="8.6.dev"
   - COQ_VERSION="dev"
 
 #matrix:
-#  fast_finish: true
-#  allow_failures:
-#    - env: COQ_VERSION="8.6.dev"
-#    - env: COQ_VERSION="dev"
+  fast_finish: true
+  allow_failures:
+    - env: COQ_VERSION="8.6.dev"
+    - env: COQ_VERSION="dev"
 
 before_install:
   - export NJOBS=2
@@ -37,12 +37,12 @@ before_install:
   - opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
   - opam repo add coq-core-dev https://coq.inria.fr/opam/core-dev
   - source ./etc/ci/travis_keep_alive.sh
-  - opam install -j ${NJOBS} -y coq.${COQ_VERSION} coq-corn
+  - opam install -j ${NJOBS} -y coq.${COQ_VERSION} # coq-corn
 
 before_script:
   - uname -a
 
-script: make TIMED=1 -j2
+script: make TIMED=1 -j2 corn && make TIMED=1 -j2
 
 after_success:
  - kill $PID_KEEP_ALIVE
