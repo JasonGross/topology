@@ -36,9 +36,13 @@ before_install:
   - opam list
   - opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
   - opam repo add coq-core-dev https://coq.inria.fr/opam/core-dev
+  - source ./etc/ci/travis_keep_alive.sh
   - opam install -j ${NJOBS} -y coq.${COQ_VERSION} coq-corn
 
 before_script:
   - uname -a
 
 script: make TIMED=1 -j2
+
+after_success:
+ - kill $PID_KEEP_ALIVE
